@@ -1,3 +1,11 @@
+trait Display {
+  def poll(): List[InputEvent]
+  def render(renderables: Set[Renderable]): Unit
+  def start(): Unit
+  def setSize(w: Int, h: Int): Unit
+  def getSize(): Vector
+}
+
 trait Renderable {
   def render(renderer: Renderer): Unit
 }

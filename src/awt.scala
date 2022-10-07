@@ -1,6 +1,8 @@
 import java.awt.Graphics
 import javax.swing.JFrame
 import java.awt.Dimension
+import java.awt.event.MouseEvent
+import java.awt.event.KeyEvent
 
 class AWTDisplay extends Display {
   private class Frame extends javax.swing.JFrame {
@@ -8,29 +10,56 @@ class AWTDisplay extends Display {
     setLocationRelativeTo(null);
   }
 
-  private class Panel(display: AWTDisplay) extends java.awt.Canvas {
+  private class Panel(display: AWTDisplay) extends javax.swing.JPanel {
     var renderables = Set.empty[Renderable]
-
-    override def paint(graphics: Graphics): Unit =
-      super.paint(graphics)
-      println("Canvas Render")
+    override def paintComponent(graphics: Graphics): Unit =
       renderables.foreach { r =>
         r.render(AWTRenderer(display, graphics))
       }
-    end paint
+  }
+
+  private class AWTInput() extends java.awt.event.MouseAdapter with InputManager { 
+    val MouseAdapter = new java.awt.event.MouseAdapter {
+        override def mouseClicked(e: MouseEvent): Unit = 
+            val coord = Vector(e.getX(), e.getY()) / getSize()
+            val normal = (coord * Vector(2, 2)) - Vector(1, 1)
+            events addOne InputEvent.Click(normal)
+    }
+
+    val KeyAdapater = new java.awt.event.KeyAdapter {
+        override def keyPressed(e: KeyEvent): Unit = 
+            events addOne InputEvent.Press(e.getKeyChar())
+    }
+
+    var events = new scala.collection.mutable.ListBuffer[InputEvent]()
+    def poll(): List[InputEvent] = {
+        val out = events.toList
+        events.clear()
+        out.toList
+    }
+
+    def addToAWT(component: java.awt.Component): Unit = 
+        component.addMouseListener(MouseAdapter)
+        component.addKeyListener(KeyAdapater)
   }
 
   private val panel = Panel(this)
   private val frame = Frame()
+  private val input = AWTInput()
 
   override def render(renderables: Set[Renderable]): Unit = {
     panel.renderables = renderables
-    frame.repaint()
+    panel.repaint() 
   }
+
+  override def poll(): List[InputEvent] = 
+    input.poll()
 
   override def start(): Unit = {
     frame.add(panel)
+    input.addToAWT(panel)
     frame.setVisible(true)
+    frame.repaint()
   }
 
   def getSize(): Vector = {
@@ -69,14 +98,14 @@ class AWTRenderer(display: Display, graphics: Graphics)
   }
 
   def fillCircle(circle: Circle): Unit = {
-    val sR = toScreen(Vector(circle.radius))
-    val rH = sR / Vector(2, 2)
+    val sR = display.getSize().max * circle.radius
+    val rH = sR / 2
     val s = toScreen(circle.position)
     graphics.fillOval(
-      s.x.toInt - rH.x.toInt,
-      s.y.toInt - rH.y.toInt,
-      sR.x.toInt,
-      sR.y.toInt
+      s.x.toInt - rH.toInt,
+      s.y.toInt - rH.toInt,
+      sR.toInt,
+      sR.toInt
     )
   }
 

@@ -64,6 +64,12 @@ case class Vector(
 
   def normal: Vector = this / Vector(this.length)
 
+  def max: Double = 
+    Math.max(x, Math.max(y, Math.max(z, w)))
+
+  def min: Double = 
+    Math.min(x, Math.min(y, Math.min(z, w)))
+
   override def toString(): String =
     f"($x, $y, $z, $w)"
 }
