@@ -1,8 +1,14 @@
+package jawt
+
 import java.awt.Graphics
 import javax.swing.JFrame
 import java.awt.Dimension
 import java.awt.event.MouseEvent
 import java.awt.event.KeyEvent
+
+import graphics.{Display, Renderable, Renderer}
+import math.{Vector, Matrix}
+import input.{InputEvent, InputManager}
 
 class AWTDisplay extends Display {
   private class Frame extends javax.swing.JFrame {
@@ -13,50 +19,33 @@ class AWTDisplay extends Display {
   private class Panel(display: AWTDisplay) extends javax.swing.JPanel {
     var renderables = Set.empty[Renderable]
     override def paintComponent(graphics: Graphics): Unit =
+      graphics.setColor(java.awt.Color.DARK_GRAY)
+      graphics.fillRect(
+        0,
+        0,
+        display.getSize().x.toInt,
+        display.getSize().y.toInt
+      )
       renderables.foreach { r =>
         r.render(AWTRenderer(display, graphics))
       }
   }
 
-  private class AWTInput() extends java.awt.event.MouseAdapter with InputManager { 
-    val MouseAdapter = new java.awt.event.MouseAdapter {
-        override def mouseClicked(e: MouseEvent): Unit = 
-            val coord = Vector(e.getX(), e.getY()) / getSize()
-            val normal = (coord * Vector(2, 2)) - Vector(1, 1)
-            events addOne InputEvent.Click(normal)
-    }
-
-    val KeyAdapater = new java.awt.event.KeyAdapter {
-        override def keyPressed(e: KeyEvent): Unit = 
-            events addOne InputEvent.Press(e.getKeyChar())
-    }
-
-    var events = new scala.collection.mutable.ListBuffer[InputEvent]()
-    def poll(): List[InputEvent] = {
-        val out = events.toList
-        events.clear()
-        out.toList
-    }
-
-    def addToAWT(component: java.awt.Component): Unit = 
-        component.addMouseListener(MouseAdapter)
-        component.addKeyListener(KeyAdapater)
-  }
-
   private val panel = Panel(this)
   private val frame = Frame()
-  private val input = AWTInput()
+  private val input = AWTInput(this)
 
   override def render(renderables: Set[Renderable]): Unit = {
     panel.renderables = renderables
-    panel.repaint() 
+    panel.repaint()
   }
 
-  override def poll(): List[InputEvent] = 
+  override def poll(): List[InputEvent] =
     input.poll()
 
   override def start(): Unit = {
     frame.add(panel)
+    input.addToAWT(frame)
     input.addToAWT(panel)
     frame.setVisible(true)
     frame.repaint()
@@ -97,10 +86,10 @@ class AWTRenderer(display: Display, graphics: Graphics)
     )
   }
 
-  def fillCircle(circle: Circle): Unit = {
-    val sR = display.getSize().max * circle.radius
+  def fillCircle(x: Double, y: Double, r: Double): Unit = {
+    val sR = display.getSize().max * r
     val rH = sR / 2
-    val s = toScreen(circle.position)
+    val s = toScreen(Vector(x, y))
     graphics.fillOval(
       s.x.toInt - rH.toInt,
       s.y.toInt - rH.toInt,
@@ -109,4 +98,37 @@ class AWTRenderer(display: Display, graphics: Graphics)
     )
   }
 
+}
+
+private class AWTInput(display: Display) extends java.awt.event.MouseAdapter with InputManager {
+  val MouseAdapter = new java.awt.event.MouseAdapter {
+    private def toScreen(e: java.awt.event.MouseEvent): Vector = {
+      val coord = Vector(e.getX(), e.getY()) / display.getSize()
+      (coord * Vector(2, 2)) - Vector(1, 1)
+    }
+
+    override def mouseClicked(e: MouseEvent): Unit =
+      events addOne InputEvent.Click(toScreen(e))
+
+    override def mouseMoved(e: MouseEvent): Unit =
+      events addOne InputEvent.Move(toScreen(e))
+
+  }
+
+  val KeyAdapater = new java.awt.event.KeyAdapter {
+    override def keyPressed(e: KeyEvent): Unit =
+      events addOne InputEvent.Press(e.getKeyChar())
+  }
+
+  var events = new scala.collection.mutable.ListBuffer[InputEvent]()
+  def poll(): List[InputEvent] = {
+    val out = events.toList
+    events.clear()
+    out.toList
+  }
+
+  def addToAWT(component: java.awt.Component): Unit =
+    component.addMouseListener(MouseAdapter)
+    component.addMouseMotionListener(MouseAdapter)
+    component.addKeyListener(KeyAdapater)
 }

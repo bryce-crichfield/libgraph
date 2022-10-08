@@ -1,0 +1,29 @@
+import math.Vector
+import input.InputEvent
+
+package object graphics {
+  trait Display {
+    def poll(): List[InputEvent]
+    def render(renderables: Set[Renderable]): Unit
+    def start(): Unit
+    def setSize(w: Int, h: Int): Unit
+    def getSize(): Vector
+  }
+
+  trait Renderable {
+    def render(renderer: Renderer): Unit
+  }
+
+  abstract class Renderer(display: Display) {
+    def toScreen(vector: Vector): Vector = {
+      val size = display.getSize()
+      val normal = (vector + Vector(1, 1)) / Vector(2, 2)
+      normal * display.getSize()
+    }
+
+    def setColor(color: Vector): Unit
+    def drawLine(x1: Double, y1: Double, x2: Double, y2: Double): Unit
+    def fillCircle(x: Double, y: Double, r: Double): Unit
+  }
+
+}
