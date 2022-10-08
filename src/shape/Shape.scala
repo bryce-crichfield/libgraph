@@ -1,4 +1,4 @@
-package model
+package shape
 
 import graphics.Renderable
 import math.{Vector, Matrix}

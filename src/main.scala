@@ -1,6 +1,6 @@
 object Main extends App {
   val app = core.Application (
-    state.GraphProgram(),
+    state.TestStateLayer(),
     jawt.AWTDisplay(),
     core.Clock(30)
   )

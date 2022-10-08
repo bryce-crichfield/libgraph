@@ -1,10 +1,10 @@
 package core
 
-import state.State
+import state.StateLayer
 import graphics.Display
 
 class Application(
-    val state: State,
+    val state: StateLayer,
     val display: Display,
     val clock: Clock
 ) {

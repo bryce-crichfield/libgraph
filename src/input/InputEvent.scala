@@ -9,4 +9,3 @@ enum InputEvent {
   case Move(val position: Vector) extends InputEvent
 }
 
-case class InputState()
