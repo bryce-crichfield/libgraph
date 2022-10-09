@@ -10,11 +10,12 @@ trait Application extends App {
 
   def run(): Unit = {
     display.start()
-    while (true) {
+    while (display.running()) {
       val events = display.input().poll()
       val renderables = state.update(events)
       if (clock.tick())
         display.render(renderables)
     }
+    display.dispose()
   }
 }

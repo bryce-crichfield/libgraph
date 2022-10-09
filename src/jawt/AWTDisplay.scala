@@ -3,11 +3,15 @@ package jawt
 import core.display.{Display, Renderable, Renderer, InputEvent, InputAdapter}
 import core.math.{Vector, Matrix}
 
+import scala.collection.mutable.{PriorityQueue as ZBuffer}
 import java.awt.Graphics
 import javax.swing.JFrame
 import java.awt.Dimension
 import java.awt.event.MouseEvent
 import java.awt.event.KeyEvent
+import core.display.RenderableZOrder
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
 
 
 class AWTDisplay extends Display {
@@ -15,7 +19,7 @@ class AWTDisplay extends Display {
   private val frame = AWTDisplay.Frame()
   private val adapter = AWTInput(this)
 
-  override def render(renderables: Set[Renderable]): Unit = {
+  override def render(renderables: ZBuffer[Renderable]): Unit = {
     panel.renderables = renderables
     panel.repaint()
   }
@@ -30,6 +34,9 @@ class AWTDisplay extends Display {
     frame.repaint()
   }
 
+  override def dispose(): Unit = 
+    frame.dispose()
+
   def getSize(): Vector = {
     val size = frame.getSize()
     Vector(x = size.width, y = size.height)
@@ -40,16 +47,26 @@ class AWTDisplay extends Display {
     panel.setSize(w, h)
   }
 
+  def running(): Boolean = 
+    frame.running
+
 }
 
 object AWTDisplay {
   private class Frame extends javax.swing.JFrame {
-    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE)
+    var running: Boolean = true
+    
+    addWindowListener(new WindowAdapter {
+      override def windowClosing(e: WindowEvent): Unit = 
+        running = false
+    })
+
     setLocationRelativeTo(null);
   }
 
   private class Panel(val display: AWTDisplay) extends javax.swing.JPanel {
-    var renderables = Set.empty[Renderable]
+    var renderables = ZBuffer.empty(RenderableZOrder)
+    println(f"Rendering $renderables")
     override def paintComponent(graphics: Graphics): Unit =
       graphics.setColor(java.awt.Color.DARK_GRAY)
       graphics.fillRect(

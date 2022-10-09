@@ -6,82 +6,87 @@ import core.display.Renderable
 import core.display.InputEvent
 import core.display.InputEvent
 import core.display.InputEvent
+import java.awt.event.KeyEvent
+import core.display.InputEvent
 
-
-class InteractableCircle extends core.state.Entity {
-    var circle = core.shape.Circle()
-    var delta_position = core.math.Vector(0, 0, 0)
-    var interaction_mode = InteractionMode.Unselected
-    def respond(input: List[InputEvent]): Unit = {
-        input.foreach { i => (i, interaction_mode) match
-            case InputEvent.Click(position) -> InteractionMode.Selected => 
-                interaction_mode = InteractionMode.Unselected
-            case InputEvent.Click(position) -> InteractionMode.Unselected 
-                if (position.relative_distance(circle.position) <= circle.radius) => 
-                interaction_mode = InteractionMode.Selected
-            case InputEvent.Move(last, next) -> InteractionMode.Selected => 
-                circle.position = next
-            case _ => ()
-        }
-    }
-
-    def update(): Unit = {
-        interaction_mode match
-            case InteractionMode.Selected => 
-                circle.color = core.math.Vector(0, 1, 0)
-            case InteractionMode.Unselected =>
-                circle.color = core.math.Vector(1, 0, 0)
-    }
-
-    override def render(): Set[Renderable] = Set(circle)
-
+class SpecialCircle extends core.shape.Circle {
+  var interaction_mode = SpecialCircleMode.Unselected
 }
-
-enum InteractionMode {
-    case Selected
-    case Unselected
+enum SpecialCircleMode {
+  case Selected
+  case Unselected
 }
 
 import scala.collection.mutable.{ListBuffer as Buffer}
-class CircleInteractor() extends core.state.Entity {
-    var circles = Buffer[InteractableCircle]()
-    var interactor_mode = InteractorMode.Using
+class CircleInteractor() extends core.state.InteractableEntity {
+  var circles = Buffer[SpecialCircle]()
+  var interactor_mode = InteractorMode.Using
 
-    def respond(input: List[InputEvent]): Unit = {
-       input.foreach { i => (i, interactor_mode) match
-        case InputEvent.Press('u') -> _ => 
-            interactor_mode = InteractorMode.Using
-        case InputEvent.Press('b') -> _ => 
-            interactor_mode = InteractorMode.Building
-        case InputEvent.Click(pos) -> InteractorMode.Building =>
-            val circle = new core.shape.Circle()
-            circle.position = pos
-            circle.radius = 0.2
-            circle.color = core.math.Vector(1, 0, 0)
-            val icircle = InteractableCircle()
-            icircle.circle = circle
-            circles.addOne(icircle)
-        case _ => ()
-       }
-       interactor_mode match
-        case InteractorMode.Building => () 
-        case InteractorMode.Using => circles.foreach(_.respond(input))  
+  this.on {
+    case InputEvent.Press('b') =>
+      interactor_mode = InteractorMode.Building
+    case InputEvent.Press('u') =>
+      interactor_mode = InteractorMode.Using
+  }
+
+  this.on { case InputEvent.Click(position) =>
+    interactor_mode match
+      case InteractorMode.Building =>
+        val circle = SpecialCircle()
+        circle.position = position
+        circle.radius = 0.1
+        circles.addOne(circle)
+      case InteractorMode.Using =>
+        val selected =
+          circles.find(_.interaction_mode == SpecialCircleMode.Selected)
+        selected match
+          case None =>
+            val nearest = findNearestCircle(position)
+            nearest.map { circle =>
+              circle.interaction_mode = SpecialCircleMode.Selected
+            }
+          case Some(circle) =>
+            circle.interaction_mode = SpecialCircleMode.Unselected
+  }
+
+  this.on { case InputEvent.Move(last, next) =>
+    circles.filter { _.interaction_mode == SpecialCircleMode.Selected }
+    .foreach(_.position = next)  
+  }
+
+  private def findNearestCircle(
+      position: core.math.Vector
+  ): Option[SpecialCircle] = {
+    circles
+      .map { circle =>
+        circle -> circle.position.relative_distance(position)
+      }
+      .filter { case (circle, distance) =>
+        distance <= 0.1
+      }
+      .sortWith((t1, t2) => t1._2 < t1._2)
+      .headOption
+      .map(_._1)
+  }
+
+  def update(): Unit = {
+    circles.foreach { circle =>
+      circle.interaction_mode match
+        case SpecialCircleMode.Selected =>
+          circle.color = core.math.Vector(0, 1, 0)
+        case SpecialCircleMode.Unselected =>
+          circle.color = core.math.Vector(1, 0, 0)
     }
+  }
 
-    def update(): Unit = {
-       interactor_mode match
-        case InteractorMode.Using => circles.foreach(_.update()) 
-        case _ => ()
-       
-    }
-
-    override def render(): Set[Renderable] = 
-        circles.flatMap(_.render()).toSet
-
+  override def render(): Set[Renderable] =
+    circles.map { (circle: SpecialCircle) =>
+      circle.asInstanceOf[Renderable]
+    }.toSet
 
 }
 
 enum InteractorMode {
-    case Building
-    case Using
+  case Building
+  case Using
 }
