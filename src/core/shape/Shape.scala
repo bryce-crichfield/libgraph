@@ -1,7 +1,7 @@
-package shape
+package core.shape
 
-import graphics.Renderable
-import math.{Vector, Matrix}
+import core.display.Renderable
+import core.math.{Vector, Matrix}
 
 trait Shape extends Renderable {
     var position = Vector()

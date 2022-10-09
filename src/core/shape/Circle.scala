@@ -1,6 +1,6 @@
-package shape
+package core.shape
 
-import graphics.Renderer
+import core.display.Renderer
 
 class Circle extends Shape {
     var radius: Double = 0

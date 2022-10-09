@@ -1,10 +1,8 @@
-object Main extends App {
-  val app = core.Application (
-    state.TestStateLayer(),
-    jawt.AWTDisplay(),
-    core.Clock(30)
-  )
-  app.display.setSize(400, 400)
-  app.run()
+object TestMain extends core.app.Application {
+    val state = test.state.TestStateLayer()
+    val display = jawt.AWTDisplay()
+    val clock = core.app.Clock(30)
+
+    display.setSize(400, 400)
+    run()
 }
-  

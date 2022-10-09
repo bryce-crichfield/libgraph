@@ -1,13 +1,11 @@
 package jawt
 
-import input.InputEvent
-import graphics.Display
-import math.Vector
+import core.display.{Display, InputEvent, InputAdapter}
+import core.math.Vector
 
-import input.InputAdapter
 import java.awt.event.{MouseEvent, KeyEvent}
 
-private class AWTInput(val display: AWTDisplay) extends input.InputAdapter {
+private class AWTInput(val display: AWTDisplay) extends InputAdapter {
   private val mouseAdapter = new AWTInput.MouseAdapter(this)
   private val keyAdpater = new AWTInput.KeyAdapter(this)
   private val events = new scala.collection.mutable.ListBuffer[InputEvent]()

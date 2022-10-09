@@ -1,7 +1,6 @@
-package state
+package core.state
 
-import input.{InputEvent}
-import graphics.{Renderable}
+import core.display.{Renderable, InputEvent}
 
 trait StateLayer {
     val responder: InputResponder
@@ -11,9 +10,4 @@ trait StateLayer {
         val model_events = responder.respond(input)
         model.update(model_events)
     }
-}
-
-class TestStateLayer extends StateLayer {
-    val responder = InputResponder(TestResponseMode())
-    val model = TestModel()
 }

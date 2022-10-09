@@ -1,6 +1,6 @@
-package graphics
+package core.display
 
-import math.Vector
+import core.math.Vector
 
 abstract class Renderer(display: Display) {
   def toScreen(vector: Vector): Vector = {

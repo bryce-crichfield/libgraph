@@ -1,13 +1,13 @@
-package core
+package core.app
 
-import state.StateLayer
-import graphics.Display
+import core.state.StateLayer
+import core.display.Display
 
-class Application(
-    val state: StateLayer,
-    val display: Display,
-    val clock: Clock
-) {
+trait Application extends App {
+  val state: StateLayer
+  val display: Display
+  val clock: Clock
+
   def run(): Unit = {
     display.start()
     while (true) {

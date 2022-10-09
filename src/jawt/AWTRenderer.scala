@@ -1,7 +1,7 @@
 package jawt
 
-import graphics.{Display, Renderer}
-import math.Vector
+import core.display.{Display, Renderer}
+import core.math.Vector
 
 import java.awt.Graphics
 

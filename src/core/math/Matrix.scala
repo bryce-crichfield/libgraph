@@ -1,4 +1,4 @@
-package math
+package core.math
 
 case class Matrix(
     a: Vector = Vector(),

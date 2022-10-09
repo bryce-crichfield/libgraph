@@ -1,4 +1,4 @@
-package core
+package core.app
 
 class Clock(val fps: Int = 60) {
   val time_ns: Long = (1e9 / fps).toLong

@@ -1,6 +1,6 @@
-package input
+package core.display
 
-import math.Vector
+import core.math.Vector
 
 enum InputEvent {
   case Click(val position: Vector) extends InputEvent

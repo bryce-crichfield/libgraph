@@ -1,15 +1,8 @@
-package state
-
-import graphics.Renderable
-import shape.Circle
-
-trait ModelEvent[O] {
-  def update(model: Model): O
-}
-
-trait UnitModelEvent extends ModelEvent[Unit] {
-    def update(model: Model): Unit 
-}
+package test.state
+import core.display.Renderable
+import core.state.*
+import core.shape.*
+import core.math.Vector
 
 case class PrintEvent(message: String) extends UnitModelEvent {
   def update(model: Model): Unit =
@@ -33,8 +26,9 @@ case class AddEvent(addend: Int) extends UnitModelEvent {
 case class Publish() extends ModelEvent[Renderable] {
     def update(model: Model): Renderable = 
         val out = new Circle()
-        out.position = math.Vector(0, 0)
+        out.position = Vector(0, 0)
         out.radius = 0.1
-        out.color = math.Vector(1, 0, 0)
+        out.color = Vector(1, 0, 0)
         return out
 }
+

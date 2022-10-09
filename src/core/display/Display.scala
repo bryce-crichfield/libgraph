@@ -1,7 +1,6 @@
-package graphics
+package core.display
 
-import input.{InputEvent, InputAdapter}
-import math.Vector
+import core.math.Vector
 
 trait Display {
     def render(renderables: Set[Renderable]): Unit

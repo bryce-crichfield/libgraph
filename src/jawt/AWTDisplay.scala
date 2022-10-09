@@ -1,14 +1,14 @@
 package jawt
 
+import core.display.{Display, Renderable, Renderer, InputEvent, InputAdapter}
+import core.math.{Vector, Matrix}
+
 import java.awt.Graphics
 import javax.swing.JFrame
 import java.awt.Dimension
 import java.awt.event.MouseEvent
 import java.awt.event.KeyEvent
 
-import graphics.{Display, Renderable, Renderer}
-import math.{Vector, Matrix}
-import input.{InputEvent, InputAdapter}
 
 class AWTDisplay extends Display {
   private val panel = AWTDisplay.Panel(this)

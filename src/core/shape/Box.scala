@@ -1,7 +1,7 @@
-package shape
+package core.shape
 
-import math.Vector
-import graphics.Renderer
+import core.math.Vector
+import core.display.Renderer
 
 class Box extends Shape {
   var corner_two: Option[Vector] = None
