@@ -1,13 +1,14 @@
 package core.state
 
 import core.display.{Renderable, InputEvent}
+import scala.collection.mutable.{ListBuffer as Buffer}
 
 trait StateLayer {
-    val responder: InputResponder
-    val model: Model
+    val entities: Buffer[Entity] = Buffer.empty 
 
     def update(input: List[InputEvent]): Set[Renderable] = {
-        val model_events = responder.respond(input)
-        model.update(model_events)
+        entities.foreach(_.respond(input))
+        entities.foreach(_.update())
+        entities.flatMap(_.render()).toSet
     }
 }

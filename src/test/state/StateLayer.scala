@@ -1,8 +1,7 @@
 package test.state
 
-import core.state.{InputResponder, StateLayer}
+import core.state.{StateLayer}
 
 class TestStateLayer extends StateLayer {
-    val responder = InputResponder(TestResponseMode())
-    val model = TestModel()
+    entities addOne (CircleInteractor())
 }

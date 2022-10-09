@@ -57,7 +57,7 @@ case class Vector(
 
   def length: Double = {
     Math.sqrt(
-      (x * x) +
+        (x * x) +
         (y * y) +
         (z * z) +
         (w * w)
@@ -72,6 +72,25 @@ case class Vector(
   def min: Double =
     Math.min(x, Math.min(y, Math.min(z, w)))
 
+  def clamp(lower: Vector, upper: Vector): Vector = {
+    var out = this
+    if x < lower.x then out = out.x = lower.x
+    if x > upper.x then out = out.x = upper.x
+    if y < lower.y then out = out.y = lower.y
+    if y > upper.y then out = out.y = upper.y
+    if z < lower.z then out = out.z = lower.z
+    if z > upper.z then out = out.z = upper.z
+    if w < lower.w then out = out.w = lower.w
+    if w > upper.w then out = out.w = upper.w
+    out
+  }
+
+  // Calculates Distance without the 4th component 
+  def relative_distance(that: Vector): Double = 
+    ((this.w = 0) - (that.w = 0)).length
+
+  def absolute_distance(that: Vector): Double = 
+    (this - that).length
   override def toString(): String =
     f"($x, $y, $z, $w)"
 }

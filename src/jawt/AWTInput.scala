@@ -25,16 +25,19 @@ private class AWTInput(val display: AWTDisplay) extends InputAdapter {
 object AWTInput {
   private class MouseAdapter(val input: AWTInput)
       extends java.awt.event.MouseAdapter {
-    private def toScreen(e: java.awt.event.MouseEvent): Vector = {
+    var mouse_position = Vector(0, 0, 0)
+    private def fromScreen(e: java.awt.event.MouseEvent): Vector = {
       val coord = Vector(e.getX(), e.getY()) / input.display.getSize()
       (coord * Vector(2, 2)) - Vector(1, 1)
     }
 
     override def mouseClicked(e: MouseEvent): Unit =
-      input.events addOne InputEvent.Click(toScreen(e))
+      input.events.addOne(InputEvent.Click(fromScreen(e)))
 
     override def mouseMoved(e: MouseEvent): Unit =
-      input.events addOne InputEvent.Move(toScreen(e))
+      val current = fromScreen(e)
+      input.events.addOne(InputEvent.Move(mouse_position, current))
+      mouse_position = current
 
   }
 
