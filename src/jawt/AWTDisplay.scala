@@ -1,7 +1,8 @@
 package jawt
 
 import core.display.{Display, Renderable, Renderer, InputEvent, InputAdapter}
-import core.math.{Vector, Matrix}
+
+import core.math.{Vector, Matrix, Screen, Default}
 
 import scala.collection.mutable.{PriorityQueue as ZBuffer}
 import java.awt.Graphics
@@ -37,9 +38,9 @@ class AWTDisplay extends Display {
   override def dispose(): Unit = 
     frame.dispose()
 
-  def getSize(): Vector = {
+  def getSize(): Vector[Screen] = {
     val size = frame.getSize()
-    Vector(x = size.width, y = size.height)
+    Vector[Screen](size.width, size.height, 0, 1)
   }
 
   def setSize(w: Int, h: Int): Unit = {

@@ -1,26 +1,25 @@
 package test.state
 
-import core.state.{StateLayer, Container}
-import core.math.Vector
-
-def TestContainer(): Container = {
-    val c1 = Container()
-    c1.position = Vector.Vec2(0, .25)
-    c1.size = Vector.Vec2(.1, .1)
-    c1.color = Vector(1,1,0)
-    
-    val c2 = Container()
-    c2.color = Vector(1,0,0)
-    val c3 = Container()
-    c3.color = Vector(0,1,0)
-
-    c1.children.addOne(c2)
-    c1.children.addOne(c3)
-    c1
-}
-
+import core.state.StateLayer
+import core.math.{Vector, Normalized, Projection}
+import core.state.Entity
+import core.display.Renderable
+import core.shape.Rectangle
 
 class TestStateLayer extends StateLayer {
-    entities addOne (CircleInteractor())
-    entities addOne (TestContainer())
+    entities addOne(TestRectangle())
+    // entities addOne (CircleInteractor())
+    // entities addOne (Test.g)
+}
+
+given Projection[Normalized, Normalized] with
+    def apply(vector: Vector[Normalized]): Vector[Normalized] = vector
+
+class TestRectangle extends Entity {
+    override def update(): Unit = ()
+    override def render(): Set[Renderable] =
+        Set(Rectangle[Normalized](
+            Vector(0, 0, 0, 1),
+            Vector(.1, .1, 0, 1),
+        )) 
 }

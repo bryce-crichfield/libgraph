@@ -1,26 +1,43 @@
 package core.math
 
-case class Vector(
+case class Vector[S<: CoordinateSystem](
     x: Double = 0,
     y: Double = 0,
     z: Double = 1,
     w: Double = 1
 ) {
-  def x_=(value: Double) = this.copy(x = value)
-  def y_=(value: Double) = this.copy(y = value)
-  def z_=(value: Double) = this.copy(z = value)
-  def w_=(value: Double) = this.copy(w = value)
+  def x_=(value: Double): Vector[S] = this.copy(x = value)
+  def y_=(value: Double): Vector[S] = this.copy(y = value)
+  def z_=(value: Double): Vector[S] = this.copy(z = value)
+  def w_=(value: Double): Vector[S] = this.copy(w = value)
 
   def r = x
   def g = y
   def b = z
   def a = w
-  def r_=(value: Double) = this.copy(x = value)
-  def g_=(value: Double) = this.copy(y = value)
-  def b_=(value: Double) = this.copy(z = value)
-  def a_=(value: Double) = this.copy(w = value)
+  def r_=(value: Double): Vector[S] = this.copy(x = value)
+  def g_=(value: Double): Vector[S] = this.copy(y = value)
+  def b_=(value: Double): Vector[S] = this.copy(z = value)
+  def a_=(value: Double): Vector[S] = this.copy(w = value)
 
-  infix def +(that: Vector): Vector =
+  infix def + (v: Double): Vector[S] = {
+    this + Vector[S](v, v, v, v)
+  }
+
+  infix def - (v: Double): Vector[S] = {
+    this - Vector[S](v, v, v, v)
+  }
+
+  infix def * (v: Double): Vector[S] = {
+    this * Vector[S](v, v, v, v)
+  }
+
+  infix def / (v: Double): Vector[S] = {
+    this / Vector[S](v, v, v, v)
+  }
+
+
+  infix def +(that: Vector[S]): Vector[S] =
     Vector(
       x + that.x,
       y + that.y,
@@ -28,7 +45,7 @@ case class Vector(
       w + that.w
     )
 
-  infix def -(that: Vector): Vector =
+  infix def -(that: Vector[S]): Vector[S] =
     Vector(
       x - that.x,
       y - that.y,
@@ -36,7 +53,7 @@ case class Vector(
       w - that.w
     )
 
-  infix def *(that: Vector): Vector =
+  infix def *(that: Vector[S]): Vector[S] =
     Vector(
       x * that.x,
       y * that.y,
@@ -44,7 +61,7 @@ case class Vector(
       w * that.w
     )
 
-  infix def /(that: Vector): Vector =
+  infix def /(that: Vector[S]): Vector[S] =
     Vector(
       x / that.x,
       y / that.y,
@@ -64,7 +81,7 @@ case class Vector(
     )
   }
 
-  def normal: Vector = this / Vector(this.length)
+  def normal: Vector[S] = this / Vector(this.length)
 
   def max: Double =
     Math.max(x, Math.max(y, Math.max(z, w)))
@@ -72,7 +89,7 @@ case class Vector(
   def min: Double =
     Math.min(x, Math.min(y, Math.min(z, w)))
 
-  def clamp(lower: Vector, upper: Vector): Vector = {
+  def clamp(lower: Vector[S], upper: Vector[S]): Vector[S] = {
     var out = this
     if x < lower.x then out = out.x = lower.x
     if x > upper.x then out = out.x = upper.x
@@ -85,22 +102,33 @@ case class Vector(
     out
   }
 
+  def idmap[B <: CoordinateSystem]: Vector[B] = 
+    Vector[B](x, y, z, w)
+
+  def flip(x: Boolean = false,
+    y: Boolean = false, 
+    z: Boolean = false, 
+    w: Boolean = false): Vector[S] = {
+      def toInt(b: Boolean) = if b then -1 else 1
+      this * Vector[S](toInt(x), toInt(y), toInt(z), toInt(w)) 
+    }
+
   // Calculates Distance without the 4th component 
-  def relative_distance(that: Vector): Double = 
+  def relative_distance(that: Vector[S]): Double = 
     ((this.w = 0) - (that.w = 0)).length
 
-  def absolute_distance(that: Vector): Double = 
+  def absolute_distance(that: Vector[S]): Double = 
     (this - that).length
   override def toString(): String =
     f"($x, $y, $z, $w)"
 }
 object Vector {
-  def apply(id: Double): Vector =
+  def apply[S<: CoordinateSystem](id: Double): Vector[S] =
     Vector(id, id, id, id)
 
-  def Vec2(x: Double): Vector = 
+  def Vec2[S<: CoordinateSystem](x: Double): Vector[S] = 
     Vector(x, x, 0, 1)
 
-  def Vec2(x: Double, y: Double): Vector = 
+  def Vec2[S<: CoordinateSystem](x: Double, y: Double): Vector[S] = 
     Vector(x, y, 0, 1)
 }

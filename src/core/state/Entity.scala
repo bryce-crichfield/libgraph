@@ -1,12 +1,13 @@
 package core.state
 
 import core.display.{InputEvent, Renderable}
+import core.math.Vector
 
 import scala.collection.mutable.{ListBuffer as Buffer}
 
 trait Entity {
-    def update(): Unit
-    def render(): Set[Renderable]
+    def update(): Unit 
+    def render(): Set[Renderable] 
 }
 
 type Responder = PartialFunction[InputEvent, Unit]

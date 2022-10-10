@@ -1,6 +1,6 @@
 package core.display
 import scala.collection.mutable.{PriorityQueue as ZBuffer}
-import core.math.Vector
+import core.math.{Vector, Screen}
 
 trait Display {
     def render(renderables: ZBuffer[Renderable]): Unit
@@ -8,7 +8,7 @@ trait Display {
     def start(): Unit
     def dispose(): Unit 
     def setSize(w: Int, h: Int): Unit
-    def getSize(): Vector
+    def getSize(): Vector[Screen]
     def running(): Boolean
 }
 
