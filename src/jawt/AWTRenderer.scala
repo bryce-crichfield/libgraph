@@ -40,4 +40,17 @@ class AWTRenderer(display: Display, graphics: Graphics)
       sR.toInt
     )
   }
+
+  def fillRect(x: Double, y: Double, w: Double, h: Double): Unit = {
+    val sP = toScreen(Vector(x, y))
+    val sS = display.getSize() * Vector(w, h)
+    graphics.fillRect(
+      sP.x.toInt, sP.y.toInt, sS.x.toInt, sS.y.toInt
+    )
+  }
+
+  def text(msg: String, x: Double, y: Double, size: Double): Unit = {
+    // graphics.drawString(msg, x.toInt, y.toInt)
+  }
+
 }

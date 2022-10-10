@@ -27,6 +27,10 @@ class CircleInteractor() extends core.state.InteractableEntity {
       interactor_mode = InteractorMode.Building
     case InputEvent.Press('u') =>
       interactor_mode = InteractorMode.Using
+    case InputEvent.Press('d') 
+      if interactor_mode equals InteractorMode.Using =>
+        circles.filterInPlace(_.interaction_mode equals 
+          SpecialCircleMode.Unselected)
   }
 
   this.on { case InputEvent.Click(position) =>

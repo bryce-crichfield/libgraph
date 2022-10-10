@@ -1,5 +1,6 @@
 package core.state
 
+import core.math.Vector
 import core.display.{Renderable, InputEvent}
 import scala.collection.mutable.{ListBuffer as Buffer}
 import scala.collection.mutable.{PriorityQueue as ZBuffer}
@@ -21,3 +22,5 @@ trait StateLayer {
         zbuffer
     }
 }
+
+

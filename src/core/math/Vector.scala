@@ -97,4 +97,10 @@ case class Vector(
 object Vector {
   def apply(id: Double): Vector =
     Vector(id, id, id, id)
+
+  def Vec2(x: Double): Vector = 
+    Vector(x, x, 0, 1)
+
+  def Vec2(x: Double, y: Double): Vector = 
+    Vector(x, y, 0, 1)
 }

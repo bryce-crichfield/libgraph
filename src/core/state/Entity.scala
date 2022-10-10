@@ -6,7 +6,7 @@ import scala.collection.mutable.{ListBuffer as Buffer}
 
 trait Entity {
     def update(): Unit
-    def render(): Set[Renderable] = Set.empty
+    def render(): Set[Renderable]
 }
 
 type Responder = PartialFunction[InputEvent, Unit]
