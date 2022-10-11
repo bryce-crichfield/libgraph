@@ -112,7 +112,7 @@ case class Vector[S<: CoordinateSystem](
       def toInt(b: Boolean) = if b then -1 else 1
       this * Vector[S](toInt(x), toInt(y), toInt(z), toInt(w)) 
     }
-
+  def toList: List[Double] = List(x, y, z, w)
   // Calculates Distance without the 4th component 
   def relative_distance(that: Vector[S]): Double = 
     ((this.w = 0) - (that.w = 0)).length
@@ -123,8 +123,9 @@ case class Vector[S<: CoordinateSystem](
     f"($x, $y, $z, $w)"
 }
 object Vector {
-  def apply[S<: CoordinateSystem](id: Double): Vector[S] =
-    Vector(id, id, id, id)
+  
+  def id[S<: CoordinateSystem](id: Double): Vector[S] =
+    Vector(id, id, id, 1)
 
   def Vec2[S<: CoordinateSystem](x: Double): Vector[S] = 
     Vector(x, x, 0, 1)

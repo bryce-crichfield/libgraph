@@ -9,9 +9,10 @@ trait StateLayer {
     val entities: Buffer[Entity] = Buffer.empty 
 
     def update(input: List[InputEvent]): ZBuffer[Renderable] = {
-        entities.foreach {
-            case e: InteractableEntity => e.respond(input)
-            case _ => () 
+        entities.foreach { _ => ()
+            // case e: InteractableEntity => e.respond(input)
+            // case e: Entity => e.update()
+            // case _ => () 
         }
         entities.foreach(_.update())
         val zbuffer = ZBuffer.empty(core.display.RenderableZOrder)

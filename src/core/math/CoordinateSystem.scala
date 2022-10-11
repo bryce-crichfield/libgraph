@@ -20,7 +20,7 @@ trait Normalized extends Screen {
 
 trait Local extends Normalized
 
-trait Projection[A<: CoordinateSystem, B<: CoordinateSystem] {
+trait Projection[A <: CoordinateSystem, B <: CoordinateSystem] {
   def apply(a: Vector[A]): Vector[B]
 }
 
