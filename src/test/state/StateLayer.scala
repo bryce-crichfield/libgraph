@@ -31,13 +31,6 @@ class TestRectangle(id: String,
         val lower = projection * Vector[Normalized](0, 0, 0, 1)
         val upper = projection * Vector[Normalized](1, 1, 1, 1)
         val size = upper - lower
-        // println(f"$id {")
-        // println(f"\tprojection = $projection")
-        // println(f"\tlower = $lower")
-        // println(f"\tupper = $upper")
-        // println(f"\tsize   = $size")
-        // println("}\n")
-
         val rectangle = Rectangle[Normalized](lower, size)
             .copy(color = this.color)
         Set(rectangle) ++ children.flatMap(_.render())

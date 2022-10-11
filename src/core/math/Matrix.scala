@@ -2,14 +2,14 @@ package core.math
 
 import scala.collection.mutable.ListBuffer
 
-case class Matrix[S<: CoordinateSystem](
+case class Matrix[S<: CoordinateSystem] (
     a: Vector[S] = Vector(),
     b: Vector[S] = Vector(),
     c: Vector[S] = Vector(),
     d: Vector[S] = Vector()
 ) {
 
-  def translate(vector: Vector[S]): Matrix[S] =
+  def translate (vector: Vector[S]): Matrix[S] =
     Matrix(
       a.w = vector.x,
       b.w = vector.y,
@@ -17,7 +17,7 @@ case class Matrix[S<: CoordinateSystem](
       d.w = vector.w
     )
 
-  infix def *(v: Vector[S]): Vector[S] = {
+  infix def * (v: Vector[S]): Vector[S] = {
     Vector(
       (a * v).sum,
       (b * v).sum,
