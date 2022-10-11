@@ -9,12 +9,12 @@ import java.text.Normalizer
 
 class TestStateLayer extends StateLayer {
     val root: Container = TestRectangle("root")
-    root.translate = Vector(-1, -1, 0, 1)
+    root.translate = Vector(-.75, -.75, 0, 1)
     val other: TestRectangle = TestRectangle("other")
-    other.translate = Vector(1, 1, 0, 1)
+    other.translate = Vector(.5, .5, 0, 1)
+    other.scale = Vector(.5, .5, 0, 1)
     other.color = Vector[Color](0, 0, 1, 1)
     root.addOne(other.asInstanceOf[Container])
-
     entities addOne(root)
 }
 
@@ -31,12 +31,12 @@ class TestRectangle(id: String,
         val lower = projection * Vector[Normalized](0, 0, 0, 1)
         val upper = projection * Vector[Normalized](1, 1, 1, 1)
         val size = upper - lower
-        println(f"$id {")
-        println(f"\tprojection = $projection")
-        println(f"\tlower = $lower")
-        println(f"\tupper = $upper")
-        println(f"\tsize   = $size")
-        println("}\n")
+        // println(f"$id {")
+        // println(f"\tprojection = $projection")
+        // println(f"\tlower = $lower")
+        // println(f"\tupper = $upper")
+        // println(f"\tsize   = $size")
+        // println("}\n")
 
         val rectangle = Rectangle[Normalized](lower, size)
             .copy(color = this.color)

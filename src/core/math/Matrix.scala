@@ -26,7 +26,7 @@ case class Matrix[S<: CoordinateSystem](
     )
   }
 
-  infix def andThen (m: Matrix[S]): Matrix[S] = {
+  infix def & (m: Matrix[S]): Matrix[S] = {
     val a = this.toList
     val b = m.toList
     var c = ListBuffer.fill(4)(ListBuffer.fill(4)(0.0))
@@ -39,42 +39,7 @@ case class Matrix[S<: CoordinateSystem](
         c(i).update(j, sum)
       }
     }
-    return Matrix.from(c.flatten.toList)
-
-    // // val r: Matrix[S] = Matrix(
-    // //   Vector(a.w, b.w, c.w, d.w),
-    // //   Vector(a.z, b.z, c.z, d.z),
-    // //   Vector(a.y, b.y, c.y, d.y),
-    // //   Vector(a.x, b.x, c.x, d.x)
-    // // )
-    // val r: Matrix[S]= Matrix(
-    //   m.d, m.c, m.b, m.a
-    // )
-    // val e: Vector[S] = Vector(
-    //   (a * r.d).sum,
-    //   (b * r.d).sum,
-    //   (c * r.d).sum,
-    //   (d * r.d).sum
-    // )
-    // val f: Vector[S] = Vector(
-    //   (a * r.c).sum,
-    //   (b * r.c).sum,
-    //   (c * r.c).sum,
-    //   (d * r.c).sum
-    // )
-    // val g: Vector[S] = Vector(
-    //   (a * r.b).sum,
-    //   (b * r.b).sum,
-    //   (c * r.b).sum,
-    //   (d * r.b).sum
-    // )
-    // val h: Vector[S] = Vector(
-    //   (a * r.a).sum,
-    //   (b * r.a).sum,
-    //   (c * r.a).sum,
-    //   (d * r.a).sum
-    // )
-    // Matrix[S](e, f, g, h)
+    Matrix.from(c.flatten.toList)
   }
 
   def toList: List[List[Double]] = 

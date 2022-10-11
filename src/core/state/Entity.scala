@@ -33,18 +33,22 @@ trait InteractableEntity extends Entity {
 }
 
 trait Container extends Entity {
+    var inherited: Matrix[Normalized] = Matrix.id
     var projection: Matrix[Normalized] = Matrix.id
+
     var translate: Vector[Normalized]
-    var inherited_translate: Matrix[Normalized] = Matrix.id
     var scale: Vector[Normalized]
     val children: Buffer[Container] = Buffer.empty
 
+    protected def transform(): Matrix[Normalized] = {
+        val scaled_base = Matrix.scale(scale) * translate
+        inherited & Matrix.translate(scaled_base) & Matrix.scale(scale)
+    }
+
     def update(): Unit = 
-        val _1 = inherited_translate andThen Matrix.translate(translate)
-        projection = _1
+        projection = transform()
         children.foreach { child =>
-            child.inherited_translate = _1
-            // child.projection = projection.andThen(child.projection)  
+            child.inherited = projection
             child.update()  
         }
     end update
